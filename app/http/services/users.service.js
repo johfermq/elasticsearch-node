@@ -1,4 +1,4 @@
-const ElasticsearchService = require('./../services/elasticsearch.service')
+const { ElasticsearchService } = require('./../services/elasticsearch.service')
 
 const INDEX = 'users'
 
@@ -23,7 +23,8 @@ class UserService {
     destroy(id) {
         return this.elastic.delete(INDEX, id)
     }
-    
 }
 
-module.exports = UserService;
+module.exports = {
+    UserService
+}

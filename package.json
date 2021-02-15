@@ -1,7 +1,7 @@
 {
-  "name": "elastic-node",
+  "name": "api-elastic-mongo-node",
   "version": "1.0.0",
-  "description": "Practica de node.js con elasticsearch.",
+  "description": "Api Elasticsearch y MongoDB con Node.js",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index",
@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "John F. Mandon",
   "license": "ISC",
   "dependencies": {
     "@elastic/elasticsearch": "^7.9.1",
@@ -18,5 +18,8 @@
     "cowsay": "^1.4.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
   }
 }

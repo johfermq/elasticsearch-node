@@ -3,7 +3,8 @@ const { Client } = require('@elastic/elasticsearch')
 class ElasticsearchService {
 
     constructor() {
-        this.client = new Client({ node: process.env.ELASTICSEARCH_HOST || 'http://localhost:9200' })
+        const host = process.env.ELASTICSEARCH_HOST || 'http://localhost:9200'
+        this.client = new Client({ node: host })
     }
 
     search(index, body) {
@@ -21,7 +22,8 @@ class ElasticsearchService {
     delete(index, id) {
         return this.client.delete({ index, id })
     }
-
 }
 
-module.exports = ElasticsearchService
+module.exports = {
+    ElasticsearchService
+}

@@ -23,7 +23,7 @@ app.use(cors({
 /**
  * Routes
  */
-app.use('/api/users', require('./src/routes/users.route'))
+app.use('/api/elastic/users', require('./routes/elasticsearch/users.route'))
 
 /**
  * Port

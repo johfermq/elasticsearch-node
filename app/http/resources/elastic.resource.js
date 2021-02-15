@@ -1,5 +1,5 @@
 
-function transform(data) {
+function transformElasticData(data) {
     const { hits } = data
 
     return hits.map(item => {
@@ -12,5 +12,5 @@ function transform(data) {
 }
 
 module.exports = {
-    transform
+    transformElasticData
 }

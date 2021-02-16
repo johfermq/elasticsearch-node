@@ -1,14 +1,10 @@
 const router = require('express').Router()
 
-/**
- * Services
- */
+/** Services */
 const { UserService } = require('../../app/http/services/elasticsearch/users.service')
 const service = new UserService()
 
-/**
- * Utils
- */
+/** Utils */
 const { elasticResource } = require('../../app/http/resources/elastic.resource')
 
 router.get('/', async (req, res) => {

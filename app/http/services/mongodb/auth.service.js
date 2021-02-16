@@ -1,20 +1,15 @@
 const { genSalt, hash, compare } = require('bcrypt')
-const { sign } = require('jsonwebtoken');
+const { sign } = require('jsonwebtoken')
 
-/** 
- * Models
- */
+/** Models */
 const { User } = require('../../../models/user.model')
+const { Token } = require('../../../models/token.model')
 
-/**
- * Resources
- */
+/** Resources */
 const { userResource } = require('../../resources/user.resource')
 
-/**
- * Exceptions
- */
-const { UnauthorizedException } = require('../../../exceptions/unauthorized.exception')
+/** Exceptions */
+const { InvalidCredentialsException } = require('../../../exceptions/invalidCredentials.exception')
 
 class AuthService {
 
@@ -27,28 +22,43 @@ class AuthService {
     }
 
     async login({ email, password }) {
-        const invalidCredentialsMessage = `El usuario ${email} no existe.`    
-            
         const user = await User.findOne({ email })
         if (!user) {
-            throw new UnauthorizedException(invalidCredentialsMessage)
+            throw new InvalidCredentialsException()
         }
 
         const correctPassword = await compare(password, user.password);
         if (!correctPassword) {
-            throw new UnauthorizedException(invalidCredentialsMessage)
+            throw new InvalidCredentialsException()
         }
 
-        const token = sign({ sub: user._id }, process.env.JWT_TOKEN_SECRET)
+        const expiresIn = {
+            expiresIn: Number(process.env.JWT_EXPIRES_IN) || 3600
+        }
+        const token = sign({ sub: user._id }, process.env.JWT_TOKEN_SECRET, expiresIn)
+        const saveToken = new Token({ token, userId: user._id })
+        await saveToken.save()
 
         return {
             token,
+            ...expiresIn,
             user: userResource(user)
         }
     }
 
-    async logout() {
-        return 'logout'
+    async logout(token) {
+        await Token.updateOne(
+            { token },
+            { $set: { deletedAt: new Date() } },
+            { new: true }
+        )
+
+        return true
+    }
+
+    async validate(token) {
+        const found = await Token.findOne({ token, deletedAt: null })
+        return found ? true : false
     }
 }
 

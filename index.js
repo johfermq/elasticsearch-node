@@ -1,7 +1,7 @@
 const express = require('express')
 const bodyparser = require('body-parser')
+require('dotenv').config()
 const cors = require('cors')
-require('dotenv').config({ path: './env' })
 const { say } = require('cowsay')
 
 /**
@@ -11,6 +11,11 @@ const app = express()
 app.disable('x-powered-by')
 app.use(bodyparser.urlencoded({ extended: false }))
 app.use(bodyparser.json())
+
+/**
+ * Mongoose
+ */
+require('./config/mongoose.config')
 
 /**
  * Cors
@@ -24,12 +29,12 @@ app.use(cors({
  * Routes
  */
 app.use('/api/elastic/users', require('./routes/elasticsearch/users.route'))
+app.use('/api/auth', require('./routes/mongodb/auth.route'));
 
 /**
  * Port
  */
-const PORT = process.env.PORT || 3000
-
-app.listen(PORT, () => {
-    console.info(say({ text: `Server running on port: ${PORT}.` }));
+const port = process.env.PORT || 3000
+app.listen(port, () => {
+    console.info(say({ text: `Server running on port: ${port}.` }));
 })

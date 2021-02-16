@@ -3,13 +3,13 @@ const router = require('express').Router()
 /**
  * Services
  */
-const { UserService } = require('../../app/http/services/users.service')
+const { UserService } = require('../../app/http/services/elasticsearch/users.service')
 const service = new UserService()
 
 /**
  * Utils
  */
-const { transformElasticData } = require('../../app/http/resources/elastic.resource')
+const { elasticResource } = require('../../app/http/resources/elastic.resource')
 
 router.get('/', async (req, res) => {
     try {
@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
             }
         })
 
-        res.json({ data: transformElasticData(body.hits) })
+        res.json({ data: elasticResource(body.hits) })
     } catch (error) {
         const { status = 500, message } = error
         res.status(status).json({ error: status, message })

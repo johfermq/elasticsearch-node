@@ -1,4 +1,4 @@
-const { ElasticsearchService } = require('./../services/elasticsearch.service')
+const { ElasticsearchService } = require('./elasticsearch.service')
 
 const INDEX = 'users'
 

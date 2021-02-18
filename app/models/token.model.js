@@ -14,10 +14,6 @@ const schema = new Schema({
         type: Date,
         default: Date.now,
         expires: process.env.JWT_EXPIRES_IN || 3600
-    },
-    deletedAt: {
-        type: Date,
-        required: false,
     }
 })
 

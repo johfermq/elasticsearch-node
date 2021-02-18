@@ -14,8 +14,8 @@ const authRegisterRequest = (req, res, next) => {
         uniqueRule(res)
 
         const rules = {
-            name: 'required|string|min:3',
-            email: 'required|email|unique:user',
+            name: 'required|string|min:3|max:255',
+            email: 'required|email|max:255|unique:user',
             password: 'required|string|min:6|max:30'
         }
 

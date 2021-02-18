@@ -21,6 +21,4 @@ const schema = new Schema({
     }
 })
 
-module.exports = {
-    Token: model('Token', schema)
-}
+module.exports = model('Token', schema)

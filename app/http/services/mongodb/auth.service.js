@@ -2,8 +2,8 @@ const { genSalt, hash, compare } = require('bcrypt')
 const { sign } = require('jsonwebtoken')
 
 /** Models */
-const { User } = require('../../../models/user.model')
-const { Token } = require('../../../models/token.model')
+const User = require('../../../models/user.model')
+const Token = require('../../../models/token.model')
 
 /** Resources */
 const { userResource } = require('../../resources/user.resource')
@@ -47,17 +47,13 @@ class AuthService {
     }
 
     async logout(token) {
-        await Token.updateOne(
-            { token },
-            { $set: { deletedAt: new Date() } },
-            { new: true }
-        )
+        await Token.findOneAndDelete({ token })
 
         return true
     }
 
     async validate(token) {
-        const found = await Token.findOne({ token, deletedAt: null })
+        const found = await Token.findOne({ token })
         return found ? true : false
     }
 }

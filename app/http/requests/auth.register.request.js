@@ -1,4 +1,5 @@
-const Validator = require('validatorjs')
+const { validate, validations } = require('indicative/validator')
+const { sanitize } = require('indicative/sanitizer')
 
 /** Utils */
 const { catchError } = require('../../utils/response.utils')
@@ -10,31 +11,36 @@ const { uniqueRule } = require('../../rules/unique.rule')
 const { FormRequestException } = require('../../exceptions/formRequest.exception')
 
 const authRegisterRequest = (req, res, next) => {
-    try {
-        uniqueRule(res)
+    uniqueRule(res)
 
-        const rules = {
-            name: 'required|string|min:3|max:255',
-            email: 'required|email|max:255|unique:user',
-            password: 'required|string|min:6|max:30|confirmed'
-        }
-
-        const validation = new Validator(req.body, rules)
-
-        const passes = () => {
-            delete req.body.password_confirmation
-            next()
-        }
-
-        const fails = () => {
-            throw new FormRequestException(validation.errors.all())
-        }
-
-        validation.checkAsync(passes, fails)
-
-    } catch (error) {
-        return catchError(res, error)
+    const rules = {
+        name: 'required|string|min:3|max:255',
+        email: [
+            validations.required(),
+            validations.email(),
+            validations.regex([/^[^@]+@\w+(\.\w+)+\w$/]),
+            validations.max([255]),
+            validations.unique(['user', 'email'])
+        ],
+        password: 'required|string|min:6|max:30|confirmed'
     }
+
+    const schema = {
+        name: 'trim',
+        email: 'lower_case',
+        password: 'trim'
+    }
+
+    sanitize(req.body, schema)
+
+    validate(req.body, rules, {}, { removeAdditional: true })
+        .then(validated => {
+            req.body = { ...validated }
+            next()
+        })
+        .catch(errors => {
+            catchError(res, new FormRequestException(errors))
+        })
 }
 
 module.exports = {

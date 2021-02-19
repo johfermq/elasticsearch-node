@@ -1,4 +1,5 @@
-const Validator = require('validatorjs')
+const { validate, validations } = require('indicative/validator')
+const { sanitize } = require('indicative/sanitizer')
 
 /** Utils */
 const { catchError } = require('../../utils/response.utils')
@@ -7,22 +8,30 @@ const { catchError } = require('../../utils/response.utils')
 const { FormRequestException } = require('../../exceptions/formRequest.exception')
 
 const authLoginRequest = (req, res, next) => {
-    try {
-        const rules = {
-            email: 'required|email',
-            password: 'required|string|min:6'
-        }
-
-        const validation = new Validator(req.body, rules)
-
-        if (validation.passes()) {
-            next()
-        } else {
-            throw new FormRequestException(validation.errors.all())
-        }
-    } catch (error) {
-        return catchError(res, error)
+    const rules = {
+        email: [
+            validations.required(),
+            validations.email(),
+            validations.regex([/^[^@]+@\w+(\.\w+)+\w$/])
+        ],
+        password: 'required|string|min:6'
     }
+
+    const schema = {
+        email: 'lower_case',
+        password: 'trim'
+    }
+
+    sanitize(req.body, schema)
+
+    validate(req.body, rules, {}, { removeAdditional: true })
+        .then(validated => {
+            req.body = { ...validated }
+            next()
+        })
+        .catch(errors => {
+            catchError(res, new FormRequestException(errors))
+        })
 }
 
 module.exports = {

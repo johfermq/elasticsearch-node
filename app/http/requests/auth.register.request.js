@@ -16,17 +16,18 @@ const authRegisterRequest = (req, res, next) => {
         const rules = {
             name: 'required|string|min:3|max:255',
             email: 'required|email|max:255|unique:user',
-            password: 'required|string|min:6|max:30'
+            password: 'required|string|min:6|max:30|confirmed'
         }
 
         const validation = new Validator(req.body, rules)
 
         const passes = () => {
+            delete req.body.password_confirmation
             next()
         }
 
         const fails = () => {
-            throw new FormRequestException(validation.errors)
+            throw new FormRequestException(validation.errors.all())
         }
 
         validation.checkAsync(passes, fails)

@@ -18,7 +18,7 @@ const authLoginRequest = (req, res, next) => {
         if (validation.passes()) {
             next()
         } else {
-            throw new FormRequestException(validation.errors)
+            throw new FormRequestException(validation.errors.all())
         }
     } catch (error) {
         return catchError(res, error)

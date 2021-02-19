@@ -3,21 +3,26 @@ const { Schema, model } = require('mongoose')
 const schema = Schema({
     name: {
         type: String,
+        trim: true,
         required: true,
-        min: 6,
-        max: 255
+        minlength: 3,
+        maxlength: 255
     },
     email: {
         type: String,
+        trim: true,
+        index: true,
+        unique: true,
         required: true,
-        min: 6,
-        max: 255
+        lowercase: true,
+        minlength: 6,
+        maxlength: 255
     },
     password: {
         type: String,
         required: true,
-        min: 6,
-        max: 255
+        minlength: 6,
+        maxlength: 255
     }
 }, { timestamps: true })
 

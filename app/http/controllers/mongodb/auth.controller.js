@@ -9,8 +9,8 @@ const { successResponse, catchError } = require('../../../utils/response.utils')
 
 const register = async (req, res) => {
     try {
-        const user = await authService.register(req.body)
-        return successResponse(res, userResource(user))
+        const data = await authService.register(req)
+        return successResponse(res, userResource(data))
     } catch (error) {
         return catchError(res, error)
     }
@@ -18,7 +18,7 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        const data = await authService.login(req.body)
+        const data = await authService.login(req)
         return successResponse(res, data)
     } catch (error) {
         return catchError(res, error)
@@ -27,7 +27,7 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
     try {
-        const data = await authService.logout(req.header('token'))
+        const data = await authService.logout(req)
         return successResponse(res, data)
     } catch (error) {
         return catchError(res, error)

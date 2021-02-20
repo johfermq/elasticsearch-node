@@ -9,12 +9,7 @@ const schema = new Schema({
         type: Schema.Types.ObjectId,
         required: true,
         ref: "User",
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-        expires: process.env.JWT_EXPIRES_IN || 3600
     }
-})
+}, { timestamps: true })
 
 module.exports = model('Token', schema)

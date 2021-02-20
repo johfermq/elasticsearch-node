@@ -20,7 +20,7 @@ app.use(cors({
 }))
 
 /** Routes */
-app.use('/api/elastic/users', require('./routes/elasticsearch/users.route'))
+app.use('/api/elastic/persons', require('./routes/elasticsearch/person.route'))
 app.use('/api/auth', require('./routes/mongodb/auth.route'));
 
 /** Port */

@@ -14,14 +14,16 @@ const { InvalidCredentialsException } = require('../../../exceptions/invalidCred
 class AuthService {
 
     async register(request) {
+        const { body } = request
         const salt = await genSalt(10)
-        const password = await hash(request.password, salt)
-        const user = new User({ ...request, password })
+        const password = await hash(body.password, salt)
+        const user = new User({ ...body, password })
 
         return await user.save()
     }
 
-    async login({ email, password }) {
+    async login(request) {
+        const { email, password } = request.body
         const user = await User.findOne({ email })
         if (!user) {
             throw new InvalidCredentialsException()
@@ -46,7 +48,8 @@ class AuthService {
         }
     }
 
-    async logout(token) {
+    async logout(request) {
+        const token = request.header('token')
         await Token.findOneAndDelete({ token })
 
         return true
@@ -54,6 +57,7 @@ class AuthService {
 
     async validate(token) {
         const found = await Token.findOne({ token })
+
         return found ? true : false
     }
 }

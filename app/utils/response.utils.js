@@ -12,8 +12,17 @@ const catchError = (res, error) => {
     return errorResponse(res, message, status)
 }
 
+const catchErrorElastic = (res, error) => {
+    let { statusCode, message } = error
+    if (statusCode === 404) {
+        message = 'Registro no encontrado'
+    }
+    return errorResponse(res, message, statusCode)
+}
+
 module.exports = {
     successResponse,
     errorResponse,
-    catchError
+    catchError,
+    catchErrorElastic
 }

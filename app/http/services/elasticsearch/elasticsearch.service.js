@@ -2,25 +2,26 @@ const { Client } = require('@elastic/elasticsearch')
 
 class ElasticsearchService {
 
-    constructor() {
+    constructor(index) {
         const host = process.env.ELASTICSEARCH_HOST || 'http://localhost:9200'
         this.client = new Client({ node: host })
+        this.index = index
     }
 
-    search(index, body) {
-        return this.client.search({ index, body })
+    async search(body) {
+        return await this.client.search({ index: this.index, body })
     }
 
-    index(index, body) {
-        return this.client.index({ index, body })
+    async store(body) {
+        return await this.client.index({ index: this.index, body })
     }
 
-    update(index, id, body) {
-        return this.client.update({ index, id, body })
+    async update(id, body) {
+        return await this.client.update({ index: this.index, id, body })
     }
 
-    delete(index, id) {
-        return this.client.delete({ index, id })
+    async delete(id) {
+        return await this.client.delete({ index: this.index, id })
     }
 }
 

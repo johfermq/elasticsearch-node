@@ -3,7 +3,7 @@ const { sign } = require('jsonwebtoken')
 
 /** Models */
 const User = require('../../../models/user.model')
-const Token = require('../../../models/token.model')
+const Login = require('../../../models/Login.model')
 
 /** Resources */
 const { userResource } = require('../../resources/user.resource')
@@ -38,8 +38,8 @@ class AuthService {
             expiresIn: Number(process.env.JWT_EXPIRES_IN) || 3600
         }
         const token = sign({ sub: user._id }, process.env.JWT_TOKEN_SECRET, expiresIn)
-        const saveToken = new Token({ token, userId: user._id })
-        await saveToken.save()
+        const login = new Login({ token, userId: user._id })
+        await login.save()
 
         return {
             token,
@@ -50,13 +50,13 @@ class AuthService {
 
     async logout(request) {
         const token = request.header('token')
-        await Token.findOneAndDelete({ token })
+        await Login.findOneAndDelete({ token })
 
         return true
     }
 
     async validate(token) {
-        const found = await Token.findOne({ token })
+        const found = await Login.findOne({ token })
 
         return found ? true : false
     }

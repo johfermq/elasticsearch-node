@@ -3,7 +3,7 @@ const { sign } = require('jsonwebtoken')
 
 /** Models */
 const User = require('../../../models/user.model')
-const Login = require('../../../models/Login.model')
+const Login = require('../../../models/login.model')
 
 /** Resources */
 const { userResource } = require('../../resources/user.resource')

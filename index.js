@@ -21,10 +21,11 @@ app.use(cors({
 
 /** Routes */
 app.use('/api/elastic/persons', require('./routes/elasticsearch/person.route'))
-app.use('/api/auth', require('./routes/mongodb/auth.route'));
+app.use('/api/auth', require('./routes/mongodb/auth.route'))
+app.use('/api/users', require('./routes/mongodb/user.route'))
 
 /** Port */
 const port = process.env.PORT || 3000
 app.listen(port, () => {
-    console.info(say({ text: `Server running on port: ${port}.` }));
+    console.info(say({ text: `Server running on port: ${port}.` }))
 })

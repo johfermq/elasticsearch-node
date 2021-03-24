@@ -3,11 +3,18 @@ const { genSalt, hash } = require("bcrypt");
 /** Models */
 const User = require("../../../models/user.model");
 
+/** Exceptions */
+const { ModelNotFoundException } = require("../../../exceptions/modelNotFound.exception");
+
 class UserService {
 
-  /* eslint-disable no-unused-vars */
   async index(request) {
-    return await User.find();
+    const { name = "", email = "" } = request.query;
+
+    return await User.find({
+      name: { $regex: name, $options: "i" },
+      email: { $regex: email, $options: "i" }
+    }).sort({ name: "asc"});
   }
 
   async store(request) {
@@ -21,15 +28,27 @@ class UserService {
   }
 
   async show(request) {
-    return await User.findById(request.params.id);
+    const user = await User.findById(request.params.id);
+    
+    if (!user) {
+      throw new ModelNotFoundException("Usuario no encontrado");
+    }
+
+    return user;
   }
 
   async update(request) {
-    return await User.findByIdAndUpdate(request.params.id, request.body);
+    const user = await this.show(request);
+
+    user.set(request.body);
+    
+    return user.save();
   }
 
   async destroy(request) {
-    return await User.findByIdAndDelete(request.params.id);
+    const user = await this.show(request);
+
+    return await user.delete();
   }
 }
 

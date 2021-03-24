@@ -9,13 +9,22 @@ const { successResponse, catchError } = require("../../../utils/response.utils")
 
 const index = async (req, res) => {
   try {
-    const id = req.params.id;
-    const data = id ? await userService.show(req) : await userService.index(req);
+    const data = await userService.index(req);
     return successResponse(res, userResource(data));
   } catch (error) {
     return catchError(res, error);
   }
 };
+
+const show = async (req, res) => {
+  try {
+    const data = await userService.show(req);
+    return successResponse(res, userResource(data));
+  } catch (error) {
+    return catchError(res, error);
+  }
+};
+
 
 const store = async (req, res) => {
   try {
@@ -46,6 +55,7 @@ const destroy = async (req, res) => {
 
 module.exports = {
   index,
+  show,
   store,
   update,
   destroy

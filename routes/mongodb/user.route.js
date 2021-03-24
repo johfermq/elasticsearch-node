@@ -3,14 +3,19 @@ const router = require("express").Router();
 /** Middlewares */
 const { jwt } = require("../../app/http/middlewares/jwt.middleware");
 
+/** Request */
+const { userRequest } = require("../../app/http/requests/user.request");
+
 /** Controllers */
-const { index, store, update, destroy } = require("../../app/http/controllers/mongodb/user.controller");
+const { index, show, store, update, destroy } = require("../../app/http/controllers/mongodb/user.controller");
 
-router.get("/:id?", jwt, index);
+router.get("/", jwt, index);
 
-router.post("/", jwt, store);
+router.get("/:id", jwt, show);
 
-router.patch("/:id", jwt, update);
+router.post("/", jwt, userRequest, store);
+
+router.patch("/:id", jwt, userRequest, update);
 
 router.delete("/:id", jwt, destroy);
 

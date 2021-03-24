@@ -11,7 +11,7 @@ const uniqueRule = (res) => {
   extend("unique", {
     async: true,
     compile(args) {
-      if (args.length !== 2) {
+      if (args.length < 2) {
         return catchError(res, new FormRequestException("Unique rule needs the model and column name"));
       }
 
@@ -24,11 +24,17 @@ const uniqueRule = (res) => {
         return true;
       }
 
-      const [model, attribute] = args;
+      const [model, attribute, _id] = args;
 
       const Entity = require(`../models/${model.toLocaleLowerCase()}.model`);
 
-      const founded = await Entity.findOne({ [attribute]: fieldValue });
+      let query = { [attribute]: fieldValue };
+
+      if (_id) {
+        query = { ...query, _id: { $ne: _id } };
+      }
+
+      const founded = await Entity.exists(query);
 
       if (founded) {
         return false;
